@@ -1,43 +1,51 @@
 program crypt
 // AA number of words, n
 // 88 start of  (en)generation/(de)input
-// 66 start of  (en)input/(de)input
+// 99 start of  (en)input/(de)input
 // 77 start of  (en/de)output
-
+// SEED, N, 99 ->0 ,N, 77, 88
+// 0, N, 88, 99 -> N, 77
 // R1 = 0001
-// R3 = 0044
-// Input: 
-// Output:
+// R3 = 00AA
+WRITE 52; READ 5b; XOR 44; RAND 36
 
 10: 7101       LIMM R1, 01         R[1] <- 0001
 11: 84FF       LOAD R4, FF         R[4] <- INPUT FOR SEED/0
 12: 86FF       LOAD R6, FF         R[6] <- INPUT FOR NUM OF WORDS
 13: 73AA       LIMM R3, AA         R[3] <- 00AA
 14: B603       STORE.I R6, R3      RAM[R[3]] <- R[6]
-15: C420       JUM0 R4, 20         if(R[4] = 0) GOTO DECRYPT
-16: 7966       LIMM R9, 66         R[9] <- 0066
-17: FC52       JAL RC, 52          CALL READ
-18: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]    
-19: FF2E       JAL RF, 2E          CALL RAND
-1A: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]
-1B: 7588       LIMM R5, 88         R[5] <- 0088
-1C: 7766       LIMM R7, 66         R[7] <- 0066    
-1D: FE3B       JAL RE, 3B          CALL XOR(ENCRYPT)
-1E: 7B29       LIMM RB, 29
-1F: EB00       JUMP RB             JUMP TO CALL WRITE
-20: 7966       LIMM R9, 66         R[9] <- 0066
-21: FC52       JAL RC, 52          CALL READ
-22: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]
-23: 7988       LIMM R9, 88         R[9] <- 0088
-24: FC52       JAL RC, 52          CALL READ
-25: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]
-26: 7588       LIMM R5, 88         R[5] <- 0088
-27: 7766       LIMM R7, 66         R[7] <- 0066
-28: FE3B       JAL RE, 3B          CALL XOR(DECRYPT)
-29: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]
-2A: 7877       LIMM R8, 77
-2B: FD49       JAL RD, 49          CALL WRITE
-2C: 0000       HALT
+15: C426       JUM0 R4, 26         if(R[4] = 0) GOTO DECRYPT
+16: 90FF       STORE RO, FF        WRITE 0
+17: A803       LOAD.I R8, R3
+18: 98FF       STORE R8, FF        WRITE N
+19: 7999       LIMM R9, 99         R[9] <- 0099
+1A: FC5B       JAL RC, 5B          CALL READ
+1B: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]    
+1C: FF36       JAL RF, 36          CALL RAND
+1D: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]
+1E: 7888       LIMM R8, 88
+1F: FD52       JAL RD, 52          CALL WRITE
+20: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]
+21: 7588       LIMM R5, 88         R[5] <- 0088
+22: 7799       LIMM R7, 99         R[7] <- 0099    
+23: FE44       JAL RE, 44          CALL XOR(ENCRYPT)
+24: 7B31       LIMM RB, 31
+25: EB00       JUMP RB             JUMP TO CALL WRITE
+26: 7803       LOAD.I R8, R3
+27: 98FF       STORE R8, FF        WRITE N
+28: 7999       LIMM R9, 99         R[9] <- 0099
+29: FC5B       JAL RC, 5B          CALL READ
+2A: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]
+2B: 7988       LIMM R9, 88         R[9] <- 0088
+2C: FC5B       JAL RC, 5B          CALL READ
+2D: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]
+2E: 7588       LIMM R5, 88         R[5] <- 0088
+2F: 7799       LIMM R7, 99         R[7] <- 0099
+30: FE44       JAL RE, 44          CALL XOR(DECRYPT)
+31: A603       LOAD.I R6, R3       R[6] <- RAM[R[3]]
+32: 7877       LIMM R8, 77
+33: FD52       JAL RD, 52          CALL WRITE
+34: 0000       HALT
 
 function rand
 // Input: R4, as random seed in random generator function f(x)
@@ -50,90 +58,74 @@ function rand
 // a = 2^4 + 1, c = 1, m = 2 ^ 16
 // mul by a: shift 4 & add 1, c: reg 1
 // mod m: no need as it happend naturally, under 16-bit system
-2E: 7204        LIMM R2, 4               R[2] <- 0004
-2F: 7588        LIMM R5, 88
-30: C639        JUM0 R6, 39              if(R[6] = 0)
-31: 5842        LSHIFT R8, R4, R2        R[8] <- R[4] << R[2]
-32: 1884        ADD R8, R8, R4           R[8] <- R[8] + R[4]
-33: 1881        ADD R8, R8, R1           R[8] <- R[8] + 1
-34: B805        STORE.I R8, R5           RAM[R[5]] <- R[8]
-35: 1551        ADD R5, R5, R1           R[5] <- R[5] + 1
-36: 2661        SUB R6, R6, R1           R[6] <- R[6] - 1
-37: 7B30        LIMM RB, 30
-38: EB00        JUMP RB                  JUMP TO IF    
-39: EF00        JUMP RF                  RETURN
+36: 7204        LIMM R2, 4               R[2] <- 0004
+37: 7588        LIMM R5, 88
+38: C642        JUM0 R6, 42              if(R[6] = 0)
+39: 5842        LSHIFT R8, R4, R2        R[8] <- R[4] << R[2]
+3A: 1884        ADD R8, R8, R4           R[8] <- R[8] + R[4]
+3B: 1881        ADD R8, R8, R1           R[8] <- R[8] + 1
+3C: B805        STORE.I R8, R5           RAM[R[5]] <- R[8]
+3D: A405        LOAD.I R4, R5            R[4] <- RAM[R[5]]
+3E: 1551        ADD R5, R5, R1           R[5] <- R[5] + 1
+3F: 2661        SUB R6, R6, R1           R[6] <- R[6] - 1
+40: 7B38        LIMM RB, 38
+41: EB00        JUMP RB                  JUMP TO IF    
+42: EF00        JUMP RF                  RETURN
 
 function xor
 // Input: R6, n, as the number of words; 
-//          R7, start address for one operand;
-//          R5, start address for one operand;
+//        R7, start address for one operand;
+//        R5, start address for one operand;
 // Return address: RE
 // Output: 77, start address for result
 // temp reg: R8, R9, RA
 
 // xor : RAM[R8] = RAM[R5] ^ RAM[R7] for R6 times
-3B: 7877       LIMM R8, 77            R[8] <- 0077
-3C: C647       JUM0 R6, 4  7          if(R[6] = 0)
-3D: A907       Load.I R9, R7         R[9] <- RAM[R[7]]
-3E: AA05       Load.I RA, R5       R[A] <- RAM[R[5]]
-3F: 499A       XOR R9, R9, RA      R[9] <- R[9] ^ R[A]
-40: B908       Store.I R9, R8        RAM[R[8]] <- R[9]
-41: 2661       SUB R6, R6, R1         R[6] <- R[6] - 1
-42: 1551       ADD R5, R5, R1      R[5] <- R[5] + 1
-43: 1771       ADD R7, R7, R1      R[7] <- R[7] + 1
-44: 1881       ADD R8, R8, R1      R[8] <- R[8] + 1
-45: 7B3C       LIMM RB, 3C
-46: EB00       JUMP RB                JUMP TO IF 
-47: EE00       JUMP RE              RETURN
+44: 7877       LIMM R8, 77               R[8] <- 0077
+45: C650       JUM0 R6, 50               if(R[6] = 0)
+46: A907       Load.I R9, R7             R[9] <- RAM[R[7]]
+47: AA05       Load.I RA, R5             R[A] <- RAM[R[5]]
+48: 499A       XOR R9, R9, RA            R[9] <- R[9] ^ R[A]
+49: B908       STORE.I R9, R8            RAM[R[8]] <- R[9]
+4A: 2661       SUB R6, R6, R1            R[6] <- R[6] - 1
+4B: 1551       ADD R5, R5, R1            R[5] <- R[5] + 1
+4C: 1771       ADD R7, R7, R1            R[7] <- R[7] + 1
+4D: 1881       ADD R8, R8, R1            R[8] <- R[8] + 1
+4E: 7B45       LIMM RB, 45
+4F: EB00       JUMP RB                   JUMP TO IF 
+50: EE00       JUMP RE                   RETURN
 
 function write 
 // Input: R6, n, as the number of words; 
-//           R8, start address for writing words
+//        R8, start address for writing words
 // Return Address: RD
 // Output: standard output to screen
-//
-// 
-49: C650       JUM0 R6, 50
-4A: A908       LOAD.I R9, R8
-4B: 99FF       STORE R9, FF
-4C: 1881       ADD R8, R8, R1
-4D: 2661       SUB R6, R6, R1
-4E: 7B49       LIMM RB, 49
-4F: EB00       JUMP RB
-50: ED00       JUMP RD
+
+52: C659       JUM0 R6, 59
+53: A908       LOAD.I R9, R8
+54: 99FF       STORE R9, FF
+55: 1881       ADD R8, R8, R1
+56: 2661       SUB R6, R6, R1
+57: 7B52       LIMM RB, 52
+58: EB00       JUMP RB
+59: ED00       JUMP RD
 
 function read
 // Input: R6, n, as the number of words; 
 //        R9, start address for storing reading result
 // Return address: RC
-// Output: 
-52: C659       JUM0 R6, 59
-53: 8AFF       LOAD RA, FF
-54: BA09       STORE.I RA, R9
-55: 1991       ADD R9, R9, R1
-56: 2661       SUB R6, R6, R1
-57: 7B52       LIMM RB, 52
-58: EB00       JUMP RB
-59: EC00       JUMP RC 
+// Output: --store start RAM[R[9]]
+5B: C662       JUM0 R6, 62
+5C: 8AFF       LOAD RA, FF
+5D: BA09       STORE.I RA, R9
+5E: 1991       ADD R9, R9, R1
+5F: 2661       SUB R6, R6, R1
+60: 7B5B       LIMM RB, 5B
+61: EB00       JUMP RB
+62: EC00       JUMP RC 
 
             
 
-main()
-read 1 word
-read 1 word = n
-if =0
-
-read n words
-read n words again
-call decrypt
-write result
-
-else =seed
-
-read n words
-call rand
-call encrypt
-write result
 
 
 
