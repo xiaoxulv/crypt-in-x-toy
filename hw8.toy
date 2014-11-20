@@ -31,7 +31,7 @@ WRITE 52; READ 5b; XOR 44; RAND 36
 23: FE44       JAL RE, 44          CALL XOR(ENCRYPT)
 24: 7B31       LIMM RB, 31
 25: EB00       JUMP RB             JUMP TO CALL WRITE
-26: 7803       LOAD.I R8, R3
+26: A803       LOAD.I R8, R3
 27: 98FF       STORE R8, FF        WRITE N
 28: 7999       LIMM R9, 99         R[9] <- 0099
 29: FC5B       JAL RC, 5B          CALL READ
